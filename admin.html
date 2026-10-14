@@ -32,6 +32,7 @@
         <li><a href="#permissions">Permission reference</a></li>
         <li><a href="#lpv-reference">Every /lpv command</a></li>
         <li><a href="#servers">Managing servers</a></li>
+        <li><a href="#plugins">Adding plugins</a></li>
         <li><a href="#allowlists">Allowlists</a></li>
         <li><a href="#coreprotect">CoreProtect</a></li>
         <li><a href="#essentials">EssentialsX</a></li>
@@ -328,6 +329,7 @@
               <tr><td><code>/omni list</code></td><td>Every server, its status, and how many are running out of the limit</td></tr>
               <tr><td><code>/omni stop &lt;name&gt;</code></td><td>Stop a server (it saves first). It stays stopped across restarts until you start it.</td></tr>
               <tr><td><code>/omni start &lt;name&gt;</code></td><td>Start a stopped server</td></tr>
+              <tr><td><code>/omni restart &lt;name&gt;</code></td><td>Restart a running server (it saves first), e.g. after editing its config</td></tr>
               <tr><td><code>/omni remove &lt;name&gt;</code></td><td>Remove a server and its allowlist. Its world is kept on disk.</td></tr>
             </tbody>
           </table>
@@ -336,6 +338,31 @@
           <p><strong>Running-server limit.</strong> The host can run a limited number of servers at once, worked out from its CPU and memory (currently 3). <code>/omni create</code> and <code>/omni start</code> refuse to go over it. Stop a server to make room.</p>
         </div>
         <p>The main server, <strong>Homeroom</strong> (<code>homeroom</code>), is created automatically and is where players land when they join.</p>
+      </section>
+
+      <section id="plugins">
+        <h2>Adding plugins</h2>
+        <p>Install Paper plugins from <a href="https://hangar.papermc.io" rel="noopener">Hangar</a> on any server except Homeroom, which stays vanilla-like. Needs <code>omniscense.admin</code> (staff and admin).</p>
+        <pre><code>/omni plugin &lt;server&gt; check &lt;plugin&gt;           <span class="c"># what would happen, without installing</span>
+/omni plugin &lt;server&gt; add &lt;plugin&gt; [--force]
+/omni plugin &lt;server&gt; remove &lt;plugin&gt;
+/omni plugin &lt;server&gt; list</code></pre>
+        <p><code>&lt;plugin&gt;</code> can be a project name (<code>Chunky</code>), <code>owner/name</code> (<code>pop4959/Chunky</code>) or the plugin's Hangar URL. <code>add</code> restarts the server to install it, then watches it start and tells you whether the plugin loaded.</p>
+        <h3>What it checks first</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Situation</th><th>What happens</th></tr></thead>
+            <tbody>
+              <tr><td>No such project</td><td>Refused, with "did you mean…" suggestions</td></tr>
+              <tr><td>No Paper builds (a Velocity or mod-loader plugin)</td><td>Refused</td></tr>
+              <tr><td>No build supports the server's Minecraft version</td><td>Refused, showing which versions it does support. <code>--force</code> installs the newest build anyway</td></tr>
+              <tr><td>Only beta or alpha builds support the version</td><td>Refused. <code>--force</code> installs the newest of those</td></tr>
+              <tr><td>File hosted outside Hangar</td><td>Refused, with the download link; it can't be installed automatically</td></tr>
+              <tr><td>Required plugins missing</td><td>Refused, naming what to add first. <code>--force</code> installs anyway</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>After installing you'll see one of: <em>running</em>, <em>problems while loading</em> (with the error lines), or <em>still starting</em>. If you were on the server and got disconnected, <code>/omni plugin &lt;server&gt; list</code> shows the result. <code>remove</code> deletes the plugin's jar but keeps its data folder.</p>
       </section>
 
       <section id="allowlists">
