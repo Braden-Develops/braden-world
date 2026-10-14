@@ -117,20 +117,22 @@
 
       <section id="roles">
         <h2>Roles</h2>
-        <p>Three groups, set up on a promotion track called <code>staff</code>: <code>default</code> → <code>superuser</code> → <code>admin</code>. Each one includes everything below it.</p>
+        <p>Four roles (LuckPerms groups), in order on a promotion track called <code>ranks</code>: <code>default</code> → <code>superuser</code> → <code>staff</code> → <code>admin</code>. Each one includes everything below it.</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Group</th><th>Who</th><th>Can</th></tr></thead>
             <tbody>
               <tr><td><code>default</code></td><td>Everyone, automatically</td><td>Homes (3), <code>/tpa</code>, <code>/back</code>, <code>/spawn</code>, <code>/warp</code>, messaging and mail, <code>/afk</code>, <code>/helpop</code> and other everyday commands</td></tr>
               <tr><td><code>superuser</code></td><td>Trusted players</td><td>Everything in default, plus: allowlist people (<code>omniscense.allowlist</code>), change game mode, <code>/tp</code> and <code>/tphere</code>, and 10 homes</td></tr>
-              <tr><td><code>admin</code></td><td>Owners</td><td>Every command on every server (<code>*</code>)</td></tr>
+              <tr><td><code>staff</code></td><td>Moderators</td><td>Everything in superuser, plus: <code>/kick</code>, <code>/mute</code>, <code>/tempban</code>, <code>/ban</code>, <code>/unban</code>, jails, <code>/invsee</code>, <code>/whois</code>, CoreProtect inspect, lookup, rollback and restore, and receiving <code>/helpop</code> messages</td></tr>
+              <tr><td><code>admin</code></td><td>Owners</td><td>Every command on every server (<code>*</code>), including server management and turning allowlists on and off</td></tr>
             </tbody>
           </table>
         </div>
         <pre><code>/lpv user &lt;player&gt; parent add superuser     <span class="c"># make someone a superuser</span>
-/lpv user &lt;player&gt; promote staff             <span class="c"># or move them one step up the track</span>
-/lpv user &lt;player&gt; demote staff              <span class="c"># and back down</span>
+/lpv user &lt;player&gt; parent add staff         <span class="c"># make someone a moderator</span>
+/lpv user &lt;player&gt; promote ranks             <span class="c"># or move them one step up the track</span>
+/lpv user &lt;player&gt; demote ranks              <span class="c"># and back down</span>
 /lpv group superuser permission set &lt;node&gt; true   <span class="c"># give every superuser something new</span></code></pre>
       </section>
 
@@ -200,7 +202,7 @@
               <tr><td><code>parent …</code></td><td>Group membership (see below)</td></tr>
               <tr><td><code>meta …</code></td><td>Prefixes, suffixes and metadata (see below)</td></tr>
               <tr><td><code>editor</code></td><td>Open the web editor for this player</td></tr>
-              <tr><td><code>promote [track] [context…] [--dont-add-to-first]</code></td><td>Move up a track, e.g. default → superuser</td></tr>
+              <tr><td><code>promote [track] [context…] [--dont-add-to-first]</code></td><td>Move up a track, e.g. <code>promote ranks</code> takes default → superuser</td></tr>
               <tr><td><code>demote [track] [context…] [--dont-remove-from-first]</code></td><td>Move down a track</td></tr>
               <tr><td><code>showtracks</code></td><td>Show the player's position on each track</td></tr>
               <tr><td><code>clear [context…]</code></td><td>Remove all of the player's permissions, groups and meta</td></tr>
