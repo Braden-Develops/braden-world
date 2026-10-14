@@ -90,12 +90,20 @@
             <tbody>
               <tr><td><code>/server</code></td><td>List the servers you can switch to.</td></tr>
               <tr><td><code>/server &lt;name&gt;</code></td><td>Switch to that server, e.g. <code>/server test</code>.</td></tr>
-              <tr><td><code>/msg &lt;player&gt; &lt;message&gt;</code></td><td>Private message someone on the same server.</td></tr>
-              <tr><td><code>/list</code></td><td>See who's on your current server.</td></tr>
+              <tr><td><code>/sethome [name]</code></td><td>Save your current spot as a home. You can have 3.</td></tr>
+              <tr><td><code>/home [name]</code></td><td>Teleport to a home. <code>/delhome &lt;name&gt;</code> removes one.</td></tr>
+              <tr><td><code>/tpa &lt;player&gt;</code></td><td>Ask to teleport to someone. They accept with <code>/tpaccept</code> or refuse with <code>/tpdeny</code>.</td></tr>
+              <tr><td><code>/tpahere &lt;player&gt;</code></td><td>Ask someone to teleport to you.</td></tr>
+              <tr><td><code>/back</code></td><td>Go back to where you were before your last teleport.</td></tr>
+              <tr><td><code>/spawn</code> · <code>/warp</code></td><td>Go to spawn, or list and use warps.</td></tr>
+              <tr><td><code>/msg &lt;player&gt; &lt;message&gt;</code> · <code>/r</code></td><td>Private message someone on the same server, and reply.</td></tr>
+              <tr><td><code>/mail send &lt;player&gt; &lt;message&gt;</code></td><td>Leave a message for someone who's offline.</td></tr>
+              <tr><td><code>/helpop &lt;message&gt;</code></td><td>Message the admins who are online.</td></tr>
+              <tr><td><code>/list</code> · <code>/afk</code></td><td>See who's on your server; mark yourself away.</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Admin commands (creating servers, permissions, allowlists, rollbacks) are on the <a href="admin.html">admin guide</a>.</p>
+        <p>Homes and spawn are per server: each server has its own. Admin commands (creating servers, permissions, allowlists, rollbacks) are on the <a href="admin.html">admin guide</a>.</p>
       </section>
 
       <section id="allowlists">

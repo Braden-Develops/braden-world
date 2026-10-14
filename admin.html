@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Guide · braden.world</title>
-  <meta name="description" content="Running the braden.world network: LuckPerms, server management, allowlists, CoreProtect and operations.">
+  <meta name="description" content="Running the braden.world network: LuckPerms, server management, allowlists and CoreProtect.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -28,13 +28,15 @@
       <ol>
         <li><a href="#overview">Overview</a></li>
         <li><a href="#luckperms">LuckPerms</a></li>
+        <li><a href="#roles">Roles</a></li>
         <li><a href="#permissions">Permission reference</a></li>
+        <li><a href="#lpv-reference">Every /lpv command</a></li>
         <li><a href="#servers">Managing servers</a></li>
         <li><a href="#allowlists">Allowlists</a></li>
         <li><a href="#coreprotect">CoreProtect</a></li>
+        <li><a href="#essentials">EssentialsX</a></li>
         <li><a href="#defaults">Server defaults</a></li>
         <li><a href="#architecture">How it works</a></li>
-        <li><a href="#operations">Operations</a></li>
       </ol>
     </aside>
 
@@ -56,6 +58,7 @@
               <tr><td>LuckPerms</td><td>Proxy and every server</td><td>Permissions, shared across the whole network</td></tr>
               <tr><td>CoreProtect</td><td>Every server</td><td>Block and container logging, lookups and rollbacks</td></tr>
               <tr><td>ViaVersion</td><td>Every server</td><td>Lets newer clients (26.3) join the 26.2 servers</td></tr>
+              <tr><td>EssentialsX</td><td>Every server</td><td>Homes, teleport requests, spawn, warps, messaging, moderation and admin tools</td></tr>
             </tbody>
           </table>
         </div>
@@ -82,7 +85,7 @@
         <p>Click the link it prints, edit groups and players in your browser, then press <strong>Save</strong> and run the <code>/lpv applyedits …</code> command it gives you.</p>
 
         <h3>Groups</h3>
-        <p>Grant permissions to groups, then put players in groups. Everyone starts in <code>default</code>, which has no extra permissions.</p>
+        <p>Grant permissions to groups, then put players in groups. Everyone starts in <code>default</code>; see <a href="#roles">Roles</a> for the groups that already exist.</p>
         <pre><code><span class="c"># create a moderator group</span>
 /lpv creategroup mod
 /lpv group mod permission set minecraft.command.tp true
@@ -112,6 +115,25 @@
         </div>
       </section>
 
+      <section id="roles">
+        <h2>Roles</h2>
+        <p>Three groups, set up on a promotion track called <code>staff</code>: <code>default</code> → <code>superuser</code> → <code>admin</code>. Each one includes everything below it.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Group</th><th>Who</th><th>Can</th></tr></thead>
+            <tbody>
+              <tr><td><code>default</code></td><td>Everyone, automatically</td><td>Homes (3), <code>/tpa</code>, <code>/back</code>, <code>/spawn</code>, <code>/warp</code>, messaging and mail, <code>/afk</code>, <code>/helpop</code> and other everyday commands</td></tr>
+              <tr><td><code>superuser</code></td><td>Trusted players</td><td>Everything in default, plus: allowlist people (<code>omniscense.allowlist</code>), change game mode, <code>/tp</code> and <code>/tphere</code>, and 10 homes</td></tr>
+              <tr><td><code>admin</code></td><td>Owners</td><td>Every command on every server (<code>*</code>)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <pre><code>/lpv user &lt;player&gt; parent add superuser     <span class="c"># make someone a superuser</span>
+/lpv user &lt;player&gt; promote staff             <span class="c"># or move them one step up the track</span>
+/lpv user &lt;player&gt; demote staff              <span class="c"># and back down</span>
+/lpv group superuser permission set &lt;node&gt; true   <span class="c"># give every superuser something new</span></code></pre>
+      </section>
+
       <section id="permissions">
         <h2>Permission reference</h2>
         <div class="table-wrap">
@@ -124,9 +146,170 @@
               <tr><td><code>coreprotect.inspect</code></td><td><code>/co inspect</code>: click blocks to see their history</td></tr>
               <tr><td><code>coreprotect.lookup</code></td><td><code>/co lookup</code></td></tr>
               <tr><td><code>coreprotect.rollback</code> / <code>coreprotect.restore</code></td><td>Undo and redo changes</td></tr>
+              <tr><td><code>essentials.&lt;command&gt;</code></td><td>An EssentialsX command, e.g. <code>essentials.home</code>, <code>essentials.fly</code>. EssentialsX replaces many vanilla commands, so these are usually the ones that matter</td></tr>
+              <tr><td><code>essentials.sethome.multiple.&lt;tier&gt;</code></td><td>Home limit: <code>default</code> 3, <code>vip</code> 5, <code>staff</code> 10</td></tr>
               <tr><td><code>minecraft.command.&lt;name&gt;</code></td><td>A vanilla command, e.g. <code>minecraft.command.gamemode</code>, <code>.tp</code>, <code>.give</code>, <code>.time</code></td></tr>
               <tr><td><code>luckperms.*</code></td><td>Full LuckPerms control (effectively admin)</td></tr>
               <tr><td><code>*</code></td><td>Everything</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="lpv-reference">
+        <h2>Every <code>/lpv</code> command</h2>
+        <p>The complete command list from LuckPerms 5.5.71 on the proxy. <code>/lp</code> on a Paper server has the same commands. <code>&lt;angle brackets&gt;</code> are required, <code>[square brackets]</code> are optional, and <code>[context…]</code> means optional <code>key=value</code> limits such as <code>server=test</code>. Durations look like <code>30m</code>, <code>12h</code> or <code>1d12h</code>.</p>
+
+        <h3>Top level</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>/lpv user &lt;user&gt; …</code></td><td>Manage a player (see below)</td></tr>
+              <tr><td><code>/lpv group &lt;group&gt; …</code></td><td>Manage a group (see below)</td></tr>
+              <tr><td><code>/lpv track &lt;track&gt; …</code></td><td>Manage a promotion track (see below)</td></tr>
+              <tr><td><code>/lpv log …</code></td><td>View the history of permission changes</td></tr>
+              <tr><td><code>/lpv creategroup &lt;group&gt;</code></td><td>Create a group</td></tr>
+              <tr><td><code>/lpv deletegroup &lt;group&gt;</code></td><td>Delete a group</td></tr>
+              <tr><td><code>/lpv listgroups</code></td><td>List all groups</td></tr>
+              <tr><td><code>/lpv createtrack &lt;track&gt;</code></td><td>Create a track</td></tr>
+              <tr><td><code>/lpv deletetrack &lt;track&gt;</code></td><td>Delete a track</td></tr>
+              <tr><td><code>/lpv listtracks</code></td><td>List all tracks</td></tr>
+              <tr><td><code>/lpv editor [type]</code></td><td>Open the web editor (optionally only users, groups or tracks)</td></tr>
+              <tr><td><code>/lpv search &lt;permission&gt;</code></td><td>Find every user and group that has a permission</td></tr>
+              <tr><td><code>/lpv tree [scope] [player]</code></td><td>Show the tree of all registered permissions</td></tr>
+              <tr><td><code>/lpv verbose &lt;on|record|off|upload&gt; [filter]</code></td><td>Watch permission checks live, e.g. to see which node a command checks</td></tr>
+              <tr><td><code>/lpv info</code></td><td>LuckPerms version, storage and statistics</td></tr>
+              <tr><td><code>/lpv sync</code></td><td>Reload all data from the database</td></tr>
+              <tr><td><code>/lpv networksync</code></td><td>Reload data and tell every other server to do the same</td></tr>
+              <tr><td><code>/lpv import &lt;file&gt; / export &lt;file&gt;</code></td><td>Import or export all data as a file</td></tr>
+              <tr><td><code>/lpv bulkupdate</code></td><td>Bulk-edit stored data (advanced; console recommended)</td></tr>
+              <tr><td><code>/lpv reloadconfig</code></td><td>Reload the LuckPerms config file</td></tr>
+              <tr><td><code>/lpv translations</code></td><td>Manage LuckPerms' message translations</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>/lpv user &lt;user&gt; …</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>info</code></td><td>Groups, permissions and metadata</td></tr>
+              <tr><td><code>permission …</code></td><td>Permissions (see below)</td></tr>
+              <tr><td><code>parent …</code></td><td>Group membership (see below)</td></tr>
+              <tr><td><code>meta …</code></td><td>Prefixes, suffixes and metadata (see below)</td></tr>
+              <tr><td><code>editor</code></td><td>Open the web editor for this player</td></tr>
+              <tr><td><code>promote [track] [context…] [--dont-add-to-first]</code></td><td>Move up a track, e.g. default → superuser</td></tr>
+              <tr><td><code>demote [track] [context…] [--dont-remove-from-first]</code></td><td>Move down a track</td></tr>
+              <tr><td><code>showtracks</code></td><td>Show the player's position on each track</td></tr>
+              <tr><td><code>clear [context…]</code></td><td>Remove all of the player's permissions, groups and meta</td></tr>
+              <tr><td><code>clone &lt;user&gt;</code></td><td>Copy everything to another player</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>/lpv group &lt;group&gt; …</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>info</code></td><td>Permissions, parents and metadata</td></tr>
+              <tr><td><code>permission …</code></td><td>Permissions (same subcommands as for players)</td></tr>
+              <tr><td><code>parent …</code></td><td>Groups this group inherits from (same subcommands as for players)</td></tr>
+              <tr><td><code>meta …</code></td><td>Prefixes, suffixes and metadata (same subcommands as for players)</td></tr>
+              <tr><td><code>editor</code></td><td>Open the web editor for this group</td></tr>
+              <tr><td><code>listmembers [page] [context…]</code></td><td>Players and groups that inherit this group</td></tr>
+              <tr><td><code>setweight &lt;weight&gt;</code></td><td>Priority when groups conflict (higher wins)</td></tr>
+              <tr><td><code>setdisplayname &lt;name&gt; [context…]</code></td><td>A friendly display name</td></tr>
+              <tr><td><code>showtracks</code></td><td>Tracks this group is on</td></tr>
+              <tr><td><code>clear [context…]</code></td><td>Remove all of the group's permissions, parents and meta</td></tr>
+              <tr><td><code>rename &lt;name&gt;</code></td><td>Rename the group</td></tr>
+              <tr><td><code>clone &lt;name&gt;</code></td><td>Copy the group under a new name</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>… permission …</code> (players and groups)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>info [page] [sort mode]</code></td><td>List permissions</td></tr>
+              <tr><td><code>set &lt;node&gt; [true|false] [context…]</code></td><td>Grant (or explicitly deny with false)</td></tr>
+              <tr><td><code>unset &lt;node&gt; [context…]</code></td><td>Remove</td></tr>
+              <tr><td><code>settemp &lt;node&gt; [true|false] &lt;duration&gt; [modifier] [context…]</code></td><td>Grant for a while, e.g. 1d12h</td></tr>
+              <tr><td><code>unsettemp &lt;node&gt; [duration] [context…]</code></td><td>Remove a temporary permission</td></tr>
+              <tr><td><code>check &lt;node&gt;</code></td><td>Whether it applies, and why</td></tr>
+              <tr><td><code>clear [context…]</code></td><td>Remove all permissions</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>… parent …</code> (players and groups)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>info [page] [sort mode]</code></td><td>List groups</td></tr>
+              <tr><td><code>add &lt;group&gt; [context…]</code></td><td>Add a group</td></tr>
+              <tr><td><code>remove &lt;group&gt; [context…]</code></td><td>Remove a group</td></tr>
+              <tr><td><code>set &lt;group&gt; [context…]</code></td><td>Replace all groups with this one</td></tr>
+              <tr><td><code>settrack &lt;track&gt; &lt;group&gt; [context…]</code></td><td>Set their position on a track</td></tr>
+              <tr><td><code>addtemp &lt;group&gt; &lt;duration&gt; [modifier] [context…]</code></td><td>Add a group for a while</td></tr>
+              <tr><td><code>removetemp &lt;group&gt; [duration] [context…]</code></td><td>Remove a temporary group</td></tr>
+              <tr><td><code>clear [context…]</code></td><td>Remove all groups</td></tr>
+              <tr><td><code>cleartrack &lt;track&gt; [context…]</code></td><td>Remove all groups on a track</td></tr>
+              <tr><td><code>switchprimarygroup &lt;group&gt;</code></td><td>Change the primary group (players only)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>… meta …</code> (players and groups)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>info</code></td><td>List metadata, prefixes and suffixes</td></tr>
+              <tr><td><code>set &lt;key&gt; &lt;value&gt; [context…] / unset &lt;key&gt;</code></td><td>Arbitrary metadata other plugins can read</td></tr>
+              <tr><td><code>settemp / unsettemp</code></td><td>Temporary metadata</td></tr>
+              <tr><td><code>addprefix / addsuffix &lt;priority&gt; &lt;text&gt; [context…]</code></td><td>Add a chat prefix or suffix (needs a chat plugin to display)</td></tr>
+              <tr><td><code>setprefix / setsuffix [priority] &lt;text&gt; [context…]</code></td><td>Replace the prefix or suffix</td></tr>
+              <tr><td><code>removeprefix / removesuffix &lt;priority&gt; [text]</code></td><td>Remove one</td></tr>
+              <tr><td><code>addtempprefix / addtempsuffix / settempprefix / settempsuffix</code></td><td>Temporary versions</td></tr>
+              <tr><td><code>removetempprefix / removetempsuffix</code></td><td>Remove temporary ones</td></tr>
+              <tr><td><code>clear [type] [context…]</code></td><td>Remove all meta</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>/lpv track &lt;track&gt; …</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>info</code></td><td>Groups on the track, in order</td></tr>
+              <tr><td><code>editor</code></td><td>Open the web editor for this track</td></tr>
+              <tr><td><code>append &lt;group&gt;</code></td><td>Add a group at the end</td></tr>
+              <tr><td><code>insert &lt;group&gt; &lt;position&gt;</code></td><td>Add a group at a position</td></tr>
+              <tr><td><code>remove &lt;group&gt;</code></td><td>Remove a group</td></tr>
+              <tr><td><code>clear</code></td><td>Remove all groups</td></tr>
+              <tr><td><code>rename &lt;name&gt; / clone &lt;name&gt;</code></td><td>Rename or copy the track</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><code>/lpv log …</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>recent [user] [page]</code></td><td>Recent changes, optionally by one admin</td></tr>
+              <tr><td><code>search &lt;query&gt; [page]</code></td><td>Search the change history</td></tr>
+              <tr><td><code>userhistory &lt;user&gt; [page]</code></td><td>Changes made to a player</td></tr>
+              <tr><td><code>grouphistory &lt;group&gt; [page]</code></td><td>Changes made to a group</td></tr>
+              <tr><td><code>trackhistory &lt;track&gt; [page]</code></td><td>Changes made to a track</td></tr>
+              <tr><td><code>notify [on|off]</code></td><td>Get notified in chat when permissions change</td></tr>
             </tbody>
           </table>
         </div>
@@ -186,6 +369,29 @@
           </table>
         </div>
         <p>Common parameters: <code>u:</code> user, <code>t:</code> time (<code>30m</code>, <code>2h</code>, <code>3d</code>), <code>r:</code> radius in blocks or <code>#global</code>, <code>a:</code> action (<code>block</code>, <code>+block</code>, <code>-block</code>, <code>container</code>, <code>kill</code>), <code>i:</code> block or item. Each server has its own log.</p>
+      </section>
+
+      <section id="essentials">
+        <h2>EssentialsX</h2>
+        <p>EssentialsX adds about 150 commands to every server: homes, teleport requests, warps, kits, messaging, moderation and admin tools. It replaces several vanilla commands with its own versions (<code>/msg</code>, <code>/list</code>, <code>/help</code>, <code>/me</code>, <code>/gamemode</code>, <code>/tp</code>, <code>/give</code>, <code>/ban</code>, <code>/kick</code>, <code>/time</code>, <code>/weather</code> and more), which check EssentialsX permissions (<code>essentials.&lt;command&gt;</code>) instead of vanilla ones. The <a href="#roles">roles</a> already include the right ones.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Area</th><th>Commands</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Homes and teleporting</td><td><code>/sethome</code> <code>/home</code> <code>/delhome</code> <code>/tpa</code> <code>/tpahere</code> <code>/tpaccept</code> <code>/back</code> <code>/spawn</code> <code>/warp</code></td><td>Everyone. Admins set warps with <code>/setwarp</code> and spawn with <code>/setspawn</code></td></tr>
+              <tr><td>Staff teleporting</td><td><code>/tp</code> <code>/tphere</code> <code>/tppos</code> <code>/top</code> <code>/tpall</code> <code>/tpr</code></td><td><code>/tp</code> and <code>/tphere</code> for superusers; the rest admin only</td></tr>
+              <tr><td>Messaging</td><td><code>/msg</code> <code>/r</code> <code>/mail</code> <code>/ignore</code> <code>/helpop</code> <code>/broadcast</code> <code>/socialspy</code></td><td>Messages stay on the player's current server</td></tr>
+              <tr><td>Moderation</td><td><code>/mute</code> <code>/kick</code> <code>/ban</code> <code>/tempban</code> <code>/setjail</code> <code>/togglejail</code> <code>/invsee</code> <code>/whois</code> <code>/seen</code></td><td>Bans and mutes apply to one server only; use allowlists to keep someone off the network</td></tr>
+              <tr><td>Player tools</td><td><code>/gamemode</code> <code>/fly</code> <code>/god</code> <code>/heal</code> <code>/feed</code> <code>/speed</code> <code>/vanish</code> <code>/nick</code> <code>/hat</code> <code>/repair</code></td><td>Game mode for superusers; the rest admin only</td></tr>
+              <tr><td>Items and kits</td><td><code>/give</code> <code>/item</code> <code>/kit</code> <code>/createkit</code> <code>/enchant</code> <code>/more</code> <code>/skull</code></td><td>New players automatically get the <code>tools</code> kit on first join</td></tr>
+              <tr><td>World</td><td><code>/time</code> <code>/weather</code> <code>/spawnmob</code> <code>/tree</code> <code>/remove</code> <code>/lightning</code></td><td>Admin only</td></tr>
+              <tr><td>Economy</td><td><code>/balance</code> <code>/pay</code> <code>/eco</code> <code>/sell</code> <code>/worth</code></td><td>Built in, starting balance $0; not granted to anyone except admins</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <p>EssentialsX 2.22.0 officially supports Minecraft up to 26.1.2. It runs on our 26.2 servers with an "unsupported server version" warning in the log; homes and teleporting were tested working.</p>
+        </div>
       </section>
 
       <section id="defaults">
@@ -253,26 +459,6 @@
         </ul>
       </section>
 
-      <section id="operations">
-        <h2>Operations</h2>
-        <p>These run on the host, from the Omniscense repository.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Task</th><th>How</th></tr></thead>
-            <tbody>
-              <tr><td>Deploy or update</td><td><code>scripts/deploy.sh</code>. Rebuilds the plugin and restarts the proxy (players reconnect in about 20 seconds). Worlds and data are kept.</td></tr>
-              <tr><td>Proxy console command</td><td><code>scripts/console.sh "&lt;command&gt;"</code>, e.g. <code>scripts/console.sh "lpv user Steve info"</code></td></tr>
-              <tr><td>Stop or start everything</td><td><code>sudo systemctl stop omniscense</code> / <code>start</code> / <code>status</code>. Servers save before stopping.</td></tr>
-              <tr><td>Remove the deployment</td><td><code>scripts/cleanup.sh</code> keeps all data. <code>--purge</code> deletes every world and the database.</td></tr>
-              <tr><td>Backups</td><td>Nightly at 04:00 to a separate machine: every world, the database and secrets. Kept for 14 days.</td></tr>
-              <tr><td>Restore</td><td>Steps are at the top of <code>scripts/backup.sh</code>: stop the server with <code>/omni stop</code>, restore its archive into its volume, start it again.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="note">
-          <p>For "undo what one player did", use <a href="#coreprotect">CoreProtect</a>. Backups are for losing a whole world or the database.</p>
-        </div>
-      </section>
     </main>
   </div>
 
