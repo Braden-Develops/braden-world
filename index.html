@@ -30,6 +30,7 @@
         <li><a href="#servers">Servers</a></li>
         <li><a href="#commands">Commands</a></li>
         <li><a href="#allowlists">Allowlists</a></li>
+        <li><a href="#request">Request access</a></li>
         <li><a href="#fair-play">Fair play</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ol>
@@ -101,9 +102,38 @@
         <h2>Allowlists</h2>
         <p>The network is invite-only: you need to be on the <strong>main server's allowlist</strong> to join at all. If you're not, you'll be disconnected with <em>"You are not on the allowlist for …"</em>.</p>
         <ul>
-          <li>Ask an admin to add you. They only need your Java username, even if you've never joined before.</li>
+          <li><a href="#request">Request access</a> below, or ask an admin to add you. They only need your Java username, even if you've never joined before.</li>
           <li>Other servers are open to anyone who's on the network, unless an admin gives one its own allowlist. Trying to <code>/server</code> into one you're not on shows the same message, and you stay where you are.</li>
         </ul>
+      </section>
+
+      <section id="request">
+        <h2>Request access</h2>
+        <p>Check your Minecraft username, then message Braden on Discord. The message is written for you.</p>
+
+        <form class="request-form" id="request-form" novalidate>
+          <label for="mc-username">Minecraft Java username</label>
+          <div class="field-row">
+            <input id="mc-username" name="username" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="16" placeholder="e.g. Steve" required>
+            <button class="btn" type="submit" id="check-btn">Check</button>
+          </div>
+          <p class="field-hint" id="request-status" role="status" aria-live="polite">Letters, numbers and underscores, up to 16 characters.</p>
+        </form>
+
+        <div class="player-card" id="player-card" hidden>
+          <img id="player-head" alt="" width="64" height="64">
+          <div class="player-info">
+            <strong id="player-name"></strong>
+            <code id="player-uuid"></code>
+          </div>
+          <button class="btn" type="button" id="discord-btn">Copy message &amp; open Discord</button>
+        </div>
+        <div class="request-message" id="request-message" hidden>
+          <p class="field-hint">Your message was copied. Paste it into the chat with Braden. If it didn't copy, copy it from here:</p>
+          <textarea id="message-text" rows="4" readonly></textarea>
+        </div>
+
+        <p class="field-hint">Usernames are checked with <a href="https://playerdb.co" rel="noopener">PlayerDB</a>, a public Minecraft profile lookup. Discord only lets you message people you share a server with or are friends with, so you may need to send a friend request first.</p>
       </section>
 
       <section id="fair-play">
@@ -161,6 +191,72 @@
   </footer>
 
   <script>
+    // Request access: validate the username with PlayerDB (Mojang's API doesn't allow browser
+    // requests), then copy a ready-made DM and open Braden's Discord profile
+    const DISCORD_USER_ID = "168184074207232001";
+    const form = document.getElementById("request-form");
+    const input = document.getElementById("mc-username");
+    const status = document.getElementById("request-status");
+    const checkButton = document.getElementById("check-btn");
+    const card = document.getElementById("player-card");
+    const messageBox = document.getElementById("request-message");
+    const messageText = document.getElementById("message-text");
+    let player = null;
+
+    function setStatus(text, isError) {
+      status.textContent = text;
+      status.classList.toggle("error", Boolean(isError));
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const name = input.value.trim();
+      card.hidden = true;
+      messageBox.hidden = true;
+      player = null;
+      if (!/^[A-Za-z0-9_]{1,16}$/.test(name)) {
+        setStatus("That isn't a valid Java username: use letters, numbers and underscores, up to 16 characters.", true);
+        return;
+      }
+      checkButton.disabled = true;
+      setStatus("Checking…");
+      try {
+        const response = await fetch("https://playerdb.co/api/player/minecraft/" + encodeURIComponent(name));
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body || !body.success) {
+          setStatus("No Minecraft Java account is called “" + name + "”. Check the spelling.", true);
+          return;
+        }
+        player = { name: body.data.player.username, uuid: body.data.player.id };
+        document.getElementById("player-head").src = "https://crafthead.net/avatar/" + player.uuid + "/64";
+        document.getElementById("player-head").alt = player.name + "'s skin";
+        document.getElementById("player-name").textContent = player.name;
+        document.getElementById("player-uuid").textContent = player.uuid;
+        card.hidden = false;
+        setStatus("Found it. Is this you?");
+      } catch {
+        setStatus("Couldn't reach the username lookup. Try again in a moment.", true);
+      } finally {
+        checkButton.disabled = false;
+      }
+    });
+
+    document.getElementById("discord-btn").addEventListener("click", async () => {
+      if (!player) return;
+      const message =
+        "Hi Braden! I'd like to join braden.world.\n" +
+        "Minecraft username: " + player.name + " (" + player.uuid + ")\n" +
+        "To add me: /omni allowlist baseline-minecraft-server add " + player.name;
+      messageText.value = message;
+      messageBox.hidden = false;
+      try {
+        await navigator.clipboard.writeText(message);
+      } catch {
+        messageText.select();
+      }
+      window.open("https://discord.com/users/" + DISCORD_USER_ID, "_blank", "noopener");
+    });
+
     document.querySelectorAll("[data-copy]").forEach((button) => {
       button.addEventListener("click", async () => {
         const text = document.getElementById(button.dataset.copy).textContent.trim();
