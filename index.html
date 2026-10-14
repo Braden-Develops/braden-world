@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>braden.world</title>
+  <meta name="description" content="How to join and play on the braden.world Minecraft network.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="inner">
+      <a class="brand" href="./">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="5" fill="var(--accent)"/><rect x="6" y="6" width="6" height="6" fill="var(--bg)"/><rect x="14" y="6" width="6" height="6" fill="var(--bg)" opacity=".55"/><rect x="6" y="14" width="6" height="6" fill="var(--bg)" opacity=".55"/><rect x="14" y="14" width="6" height="6" fill="var(--bg)"/></svg>
+        <span>braden.world</span>
+      </a>
+      <nav class="site-nav" aria-label="Pages">
+        <a href="./" aria-current="page">Play</a>
+        <a href="admin.html">Admin guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page with-toc">
+    <aside class="toc">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#join">Join</a></li>
+        <li><a href="#servers">Servers</a></li>
+        <li><a href="#commands">Commands</a></li>
+        <li><a href="#allowlists">Allowlists</a></li>
+        <li><a href="#fair-play">Fair play</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </aside>
+
+    <main>
+      <div class="hero">
+        <span class="eyebrow">Minecraft Java Edition</span>
+        <h1>braden.world</h1>
+        <p class="lead">A small Minecraft network for friends: a main survival server plus extra worlds that admins can spin up on demand.</p>
+        <div class="address">
+          <code id="server-address">braden.world</code>
+          <button class="copy-btn" type="button" data-copy="server-address">Copy</button>
+        </div>
+      </div>
+
+      <section id="join">
+        <h2>Join</h2>
+        <ol class="steps">
+          <li>Open <strong>Minecraft: Java Edition</strong>. Versions <strong>26.2</strong> and <strong>26.3</strong> both work.</li>
+          <li>Go to <strong>Multiplayer</strong> → <strong>Add Server</strong>.</li>
+          <li>Enter <code>braden.world</code> as the server address. No port needed.</li>
+          <li>Click <strong>Done</strong>, then join. You'll start on the main server.</li>
+        </ol>
+        <div class="note">
+          <p>Bedrock Edition (consoles, phones, Windows "Minecraft" from the Microsoft Store) can't join; the network is Java Edition only.</p>
+        </div>
+      </section>
+
+      <section id="servers">
+        <h2>Servers</h2>
+        <p>braden.world is a network: one address, several separate worlds behind it. Each server has its own world, inventory and progress. You can hop between them without leaving.</p>
+        <div class="cards">
+          <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+            <h3>Main server</h3>
+            <p>Where everyone lands when they join. Survival, normal rules.</p>
+          </div>
+          <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            <h3>Extra worlds</h3>
+            <p>Admins create more servers for events, builds or experiments. Type <code>/server</code> to see what's up.</p>
+          </div>
+          <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>
+            <h3>Backed up nightly</h3>
+            <p>Every world is backed up each night, so a disaster doesn't wipe your progress.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="commands">
+        <h2>Commands</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>/server</code></td><td>List the servers you can switch to.</td></tr>
+              <tr><td><code>/server &lt;name&gt;</code></td><td>Switch to that server, e.g. <code>/server test</code>.</td></tr>
+              <tr><td><code>/msg &lt;player&gt; &lt;message&gt;</code></td><td>Private message someone on the same server.</td></tr>
+              <tr><td><code>/list</code></td><td>See who's on your current server.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Admin commands (creating servers, permissions, allowlists, rollbacks) are on the <a href="admin.html">admin guide</a>.</p>
+      </section>
+
+      <section id="allowlists">
+        <h2>Allowlists</h2>
+        <p>Servers are open to everyone by default. An admin can put any server on an allowlist, so only approved players can enter it.</p>
+        <ul>
+          <li>If the <strong>main server</strong> has an allowlist and you're not on it, you'll be disconnected with <em>"You are not on the allowlist for …"</em>.</li>
+          <li>If you try to <code>/server</code> into an allowlisted server, you'll get the same message and stay where you are.</li>
+        </ul>
+        <p>Ask an admin to add you. They only need your Java username, even if you've never joined before.</p>
+      </section>
+
+      <section id="fair-play">
+        <h2>Fair play</h2>
+        <div class="cards">
+          <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><path d="M4 4l16 16"/></svg>
+            <h3>Anti-xray</h3>
+            <p>X-ray mods and resource packs show fake ores everywhere. Real ores only appear once they're actually exposed, so mining is the only way to find them.</p>
+          </div>
+          <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+            <h3>Everything is logged</h3>
+            <p>Every block placed or broken and every item taken from a chest is recorded. Griefing can be traced to the player and rolled back.</p>
+          </div>
+          <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <h3>Real accounts only</h3>
+            <p>Every player signs in with a genuine Microsoft account, so nobody can pretend to be someone else.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>It says "Can't resolve hostname" or won't connect.</summary>
+          <p>Double-check the address is exactly <code>braden.world</code>. If it still fails, the network may be restarting for an update; try again in a minute.</p>
+        </details>
+        <details>
+          <summary>I'm on the same Wi-Fi as the server and braden.world doesn't work.</summary>
+          <p>Some home routers can't connect to their own public address from inside the network. Ask the host for the local address to use instead.</p>
+        </details>
+        <details>
+          <summary>Why does the server say 26.2 when I'm on 26.3?</summary>
+          <p>The servers run 26.2 for plugin compatibility, and a translation layer lets newer clients join. Play normally; you won't notice a difference.</p>
+        </details>
+        <details>
+          <summary>I got disconnected with "Proxy shutting down".</summary>
+          <p>The network is being updated. It's usually back within 30 seconds, and nothing is lost: worlds are saved before every restart.</p>
+        </details>
+        <details>
+          <summary>Can I use mods?</summary>
+          <p>Performance and visual mods like Sodium or shaders work fine. Cheats aren't welcome, and anti-xray makes ore finders useless anyway.</p>
+        </details>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <span>braden.world · Minecraft Java Edition</span>
+      <a href="admin.html">Admin guide →</a>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll("[data-copy]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const text = document.getElementById(button.dataset.copy).textContent.trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          button.textContent = "Copied";
+        } catch {
+          button.textContent = "Select & copy";
+        }
+        setTimeout(() => (button.textContent = "Copy"), 1600);
+      });
+    });
+  </script>
+</body>
+</html>

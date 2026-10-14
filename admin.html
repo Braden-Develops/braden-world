@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Guide · braden.world</title>
+  <meta name="description" content="Running the braden.world network: LuckPerms, server management, allowlists, CoreProtect and operations.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="inner">
+      <a class="brand" href="./">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="5" fill="var(--accent)"/><rect x="6" y="6" width="6" height="6" fill="var(--bg)"/><rect x="14" y="6" width="6" height="6" fill="var(--bg)" opacity=".55"/><rect x="6" y="14" width="6" height="6" fill="var(--bg)" opacity=".55"/><rect x="14" y="14" width="6" height="6" fill="var(--bg)"/></svg>
+        <span>braden.world</span>
+      </a>
+      <nav class="site-nav" aria-label="Pages">
+        <a href="./">Play</a>
+        <a href="admin.html" aria-current="page">Admin guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page with-toc">
+    <aside class="toc">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#luckperms">LuckPerms</a></li>
+        <li><a href="#permissions">Permission reference</a></li>
+        <li><a href="#servers">Managing servers</a></li>
+        <li><a href="#allowlists">Allowlists</a></li>
+        <li><a href="#coreprotect">CoreProtect</a></li>
+        <li><a href="#defaults">Server defaults</a></li>
+        <li><a href="#architecture">How it works</a></li>
+        <li><a href="#operations">Operations</a></li>
+      </ol>
+    </aside>
+
+    <main>
+      <div class="hero">
+        <span class="eyebrow">For admins</span>
+        <h1>Admin guide</h1>
+        <p class="lead">Permissions, server management, allowlists and rollbacks for the braden.world network. Everything here works from in-game chat.</p>
+      </div>
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>The network is a <strong>Velocity</strong> proxy in front of several <strong>Paper</strong> servers. A custom proxy plugin, <strong>Omniscense</strong>, creates and manages those servers on demand. Every server runs the same set of plugins:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Plugin</th><th>Runs on</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>Omniscense</td><td>Proxy</td><td>Create, start, stop and remove servers; per-server allowlists</td></tr>
+              <tr><td>LuckPerms</td><td>Proxy and every server</td><td>Permissions, shared across the whole network</td></tr>
+              <tr><td>CoreProtect</td><td>Every server</td><td>Block and container logging, lookups and rollbacks</td></tr>
+              <tr><td>ViaVersion</td><td>Every server</td><td>Lets newer clients (26.3) join the 26.2 servers</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Paper's built-in <strong>anti-xray</strong> is also enabled on every server.</p>
+      </section>
+
+      <section id="luckperms">
+        <h2>LuckPerms</h2>
+        <p>LuckPerms decides who can run which commands. All servers and the proxy share one permission database, so a group or player change applies network-wide and syncs to every server automatically.</p>
+
+        <h3>Two commands, same data</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>Use it for</th></tr></thead>
+            <tbody>
+              <tr><td><code>/lpv …</code></td><td>The proxy. Works from any server. Use it for proxy permissions like <code>omniscense.*</code>.</td></tr>
+              <tr><td><code>/lp …</code></td><td>The Paper server you're on. Same data, plus tab completion for that server's commands.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The web editor (easiest)</h3>
+        <pre><code>/lpv editor</code></pre>
+        <p>Click the link it prints, edit groups and players in your browser, then press <strong>Save</strong> and run the <code>/lpv applyedits …</code> command it gives you.</p>
+
+        <h3>Groups</h3>
+        <p>Grant permissions to groups, then put players in groups. Everyone starts in <code>default</code>, which has no extra permissions.</p>
+        <pre><code><span class="c"># create a moderator group</span>
+/lpv creategroup mod
+/lpv group mod permission set minecraft.command.tp true
+/lpv group mod permission set minecraft.command.gamemode true
+/lpv group mod permission set coreprotect.inspect true
+/lpv group mod permission set coreprotect.lookup true
+
+<span class="c"># put a player in it (and take them out again)</span>
+/lpv user CherrieBara parent add mod
+/lpv user CherrieBara parent remove mod</code></pre>
+
+        <h3>Single players</h3>
+        <pre><code>/lpv user &lt;player&gt; permission set &lt;node&gt; true
+/lpv user &lt;player&gt; permission unset &lt;node&gt;
+/lpv user &lt;player&gt; info                            <span class="c"># groups and permissions</span>
+/lpv user &lt;player&gt; permission check &lt;node&gt;        <span class="c"># why they do or don't have it</span></code></pre>
+
+        <h3>Only on one server</h3>
+        <p>Add <code>server=&lt;name&gt;</code> to limit a permission to one server, using the same name as <code>/server</code>:</p>
+        <pre><code>/lpv group builder permission set minecraft.command.gamemode true server=creative</code></pre>
+        <div class="note">
+          <p>Leave proxy permissions (<code>omniscense.*</code>) global, without a <code>server=</code> context. The proxy checks them under its own name, not the server the player is on.</p>
+        </div>
+
+        <div class="warn">
+          <p><strong>Be careful with <code>*</code>.</strong> It grants every permission on every server, including LuckPerms itself and server management. Give other admins a group with only what they need.</p>
+        </div>
+      </section>
+
+      <section id="permissions">
+        <h2>Permission reference</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Node</th><th>Grants</th></tr></thead>
+            <tbody>
+              <tr><td><code>omniscense.admin</code></td><td>Every <code>/omni</code> command: create, start, stop, remove servers; turn allowlists on and off</td></tr>
+              <tr><td><code>omniscense.allowlist</code></td><td><code>/omni allowlist &lt;server&gt; add|remove|list</code> only</td></tr>
+              <tr><td><code>omniscense.allowlist.bypass</code></td><td>Join any server, even if its allowlist is on</td></tr>
+              <tr><td><code>coreprotect.inspect</code></td><td><code>/co inspect</code>: click blocks to see their history</td></tr>
+              <tr><td><code>coreprotect.lookup</code></td><td><code>/co lookup</code></td></tr>
+              <tr><td><code>coreprotect.rollback</code> / <code>coreprotect.restore</code></td><td>Undo and redo changes</td></tr>
+              <tr><td><code>minecraft.command.&lt;name&gt;</code></td><td>A vanilla command, e.g. <code>minecraft.command.gamemode</code>, <code>.tp</code>, <code>.give</code>, <code>.time</code></td></tr>
+              <tr><td><code>luckperms.*</code></td><td>Full LuckPerms control (effectively admin)</td></tr>
+              <tr><td><code>*</code></td><td>Everything</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="servers">
+        <h2>Managing servers</h2>
+        <p><code>/omni</code> is short for <code>/omniscense</code>. All of these need <code>omniscense.admin</code>.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>/omni create &lt;name&gt;</code></td><td>Create a new server with its own world, start it and add it to the network. Join it with <code>/server &lt;name&gt;</code>. Names are 1–32 lowercase letters, digits or dashes.</td></tr>
+              <tr><td><code>/omni list</code></td><td>Every server, its status, and how many are running out of the limit</td></tr>
+              <tr><td><code>/omni stop &lt;name&gt;</code></td><td>Stop a server (it saves first). It stays stopped across restarts until you start it.</td></tr>
+              <tr><td><code>/omni start &lt;name&gt;</code></td><td>Start a stopped server</td></tr>
+              <tr><td><code>/omni remove &lt;name&gt;</code></td><td>Remove a server and its allowlist. Its world is kept on disk.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <p><strong>Running-server limit.</strong> The host can run a limited number of servers at once, worked out from its CPU and memory (currently 3). <code>/omni create</code> and <code>/omni start</code> refuse to go over it. Stop a server to make room.</p>
+        </div>
+        <p>The main server (<code>baseline-minecraft-server</code>) is created automatically and is where players land when they join.</p>
+      </section>
+
+      <section id="allowlists">
+        <h2>Allowlists</h2>
+        <p>Each server has its own optional allowlist. Every allowlist is <strong>off</strong> until you turn it on, so new servers are open to everyone.</p>
+        <pre><code>/omni allowlist &lt;server&gt; add &lt;player&gt;      <span class="c"># Java username; works before their first join</span>
+/omni allowlist &lt;server&gt; remove &lt;player&gt;
+/omni allowlist &lt;server&gt; list
+/omni allowlist &lt;server&gt; on                <span class="c"># admins only</span>
+/omni allowlist &lt;server&gt; off               <span class="c"># admins only</span></code></pre>
+        <ul>
+          <li>Entries follow the Minecraft account, so name changes don't matter.</li>
+          <li>Turning a list on doesn't kick players already on that server.</li>
+          <li>Give a trusted player <code>omniscense.allowlist</code> to let them add and remove people without being able to switch lists off.</li>
+          <li>Anyone with <code>omniscense.allowlist.bypass</code> (or <code>*</code>) can always get in, so you can't lock yourself out.</li>
+        </ul>
+      </section>
+
+      <section id="coreprotect">
+        <h2>CoreProtect</h2>
+        <p>CoreProtect records block changes, container transactions, kills and more on every server. Use it to find out who did something and undo it.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>/co i</code></td><td>Toggle inspect mode. Left-click a block for its history, right-click a chest for its transactions.</td></tr>
+              <tr><td><code>/co lookup u:&lt;player&gt; t:1h</code></td><td>Everything a player did in the last hour</td></tr>
+              <tr><td><code>/co lookup u:&lt;player&gt; t:1d a:-block i:diamond_ore</code></td><td>Diamond ore a player broke in the last day (good for spotting x-ray)</td></tr>
+              <tr><td><code>/co rollback u:&lt;player&gt; t:2h r:50</code></td><td>Undo a player's changes from the last 2 hours within 50 blocks of you</td></tr>
+              <tr><td><code>/co restore u:&lt;player&gt; t:2h r:50</code></td><td>Reverse that rollback</td></tr>
+              <tr><td><code>/co purge t:30d</code></td><td>Delete log data older than 30 days to keep the database small (needs <code>coreprotect.purge</code>; purging anything newer than 30 days must be done from the console)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Common parameters: <code>u:</code> user, <code>t:</code> time (<code>30m</code>, <code>2h</code>, <code>3d</code>), <code>r:</code> radius in blocks or <code>#global</code>, <code>a:</code> action (<code>block</code>, <code>+block</code>, <code>-block</code>, <code>container</code>, <code>kill</code>), <code>i:</code> block or item. Each server has its own log.</p>
+      </section>
+
+      <section id="defaults">
+        <h2>Server defaults</h2>
+        <p>Every server created with <code>/omni create</code> starts with these settings:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Setting</th><th>Default</th></tr></thead>
+            <tbody>
+              <tr><td>Minecraft version</td><td>26.2 (Paper), joinable by 26.2 and 26.3 clients</td></tr>
+              <tr><td>Max players</td><td>20 per server</td></tr>
+              <tr><td>View / simulation distance</td><td>8 / 6 chunks</td></tr>
+              <tr><td>Memory</td><td>2 GB heap, 2 CPU cores</td></tr>
+              <tr><td>Anti-xray</td><td>On (engine mode 2): overworld ores, chests, mineshafts, geodes and nether ores below y=64</td></tr>
+              <tr><td>Message of the day</td><td>The server's name</td></tr>
+              <tr><td>Allowlist</td><td>Off</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The 26.2 version is temporary: CoreProtect doesn't support 26.3 yet. When it does, servers can be upgraded in place; worlds upgrade forward but can't go back.</p>
+      </section>
+
+      <section id="architecture">
+        <h2>How it works</h2>
+        <div class="diagram" role="img" aria-label="Players connect to braden.world, which points at the Velocity proxy. The proxy and MongoDB run together in one pod. Each Paper server runs in its own container on its own isolated network shared only with the proxy pod.">
+          <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box" x="10" y="140" width="120" height="60" rx="8"/>
+            <text class="label" x="70" y="166" text-anchor="middle">Players</text>
+            <text class="sub" x="70" y="184" text-anchor="middle">braden.world</text>
+
+            <rect class="group" x="170" y="40" width="250" height="260" rx="10"/>
+            <text class="group-label" x="186" y="62">Proxy pod</text>
+            <rect class="box-accent" x="190" y="80" width="210" height="90" rx="8"/>
+            <text class="label" x="295" y="108" text-anchor="middle">Velocity proxy</text>
+            <text class="sub" x="295" y="128" text-anchor="middle">Omniscense · LuckPerms</text>
+            <text class="sub" x="295" y="146" text-anchor="middle">the only public port</text>
+            <rect class="box" x="190" y="200" width="210" height="76" rx="8"/>
+            <text class="label" x="295" y="230" text-anchor="middle">MongoDB</text>
+            <text class="sub" x="295" y="250" text-anchor="middle">servers · permissions · allowlists</text>
+
+            <rect class="group" x="470" y="20" width="280" height="300" rx="10"/>
+            <text class="group-label" x="486" y="42">One isolated network per server</text>
+            <rect class="box" x="490" y="60" width="240" height="70" rx="8"/>
+            <text class="label" x="610" y="88" text-anchor="middle">Main server</text>
+            <text class="sub" x="610" y="108" text-anchor="middle">Paper · own world volume</text>
+            <rect class="box" x="490" y="150" width="240" height="70" rx="8"/>
+            <text class="label" x="610" y="178" text-anchor="middle">Extra server</text>
+            <text class="sub" x="610" y="198" text-anchor="middle">Paper · own world volume</text>
+            <rect class="box" x="490" y="240" width="240" height="60" rx="8" stroke-dasharray="4 4"/>
+            <text class="sub" x="610" y="275" text-anchor="middle">created by /omni create</text>
+
+            <path class="line" d="M130 170 H190"/>
+            <path class="line" d="M295 170 V200"/>
+            <path class="line" d="M400 110 H445 V95 H490"/>
+            <path class="line" d="M445 110 V185 H490"/>
+            <path class="line" d="M445 185 V270 H490"/>
+          </svg>
+        </div>
+        <ul>
+          <li><strong>Containers.</strong> Everything runs in Podman containers on one host. The proxy plugin talks to Podman to create and manage the Paper servers.</li>
+          <li><strong>Isolation.</strong> Each Paper server has its own network shared only with the proxy, so servers can't reach each other. Only the proxy is reachable from the internet.</li>
+          <li><strong>One database.</strong> MongoDB holds the server list, permissions and allowlists, with a separate login per component.</li>
+          <li><strong>Persistent.</strong> Worlds, the database and secrets survive restarts, updates and reboots. The network starts itself when the host boots.</li>
+          <li><strong>Address.</strong> <code>braden.world</code> follows the host's IP automatically, and a DNS SRV record means players don't need a port.</li>
+        </ul>
+      </section>
+
+      <section id="operations">
+        <h2>Operations</h2>
+        <p>These run on the host, from the Omniscense repository.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Task</th><th>How</th></tr></thead>
+            <tbody>
+              <tr><td>Deploy or update</td><td><code>scripts/deploy.sh</code>. Rebuilds the plugin and restarts the proxy (players reconnect in about 20 seconds). Worlds and data are kept.</td></tr>
+              <tr><td>Proxy console command</td><td><code>scripts/console.sh "&lt;command&gt;"</code>, e.g. <code>scripts/console.sh "lpv user Steve info"</code></td></tr>
+              <tr><td>Stop or start everything</td><td><code>sudo systemctl stop omniscense</code> / <code>start</code> / <code>status</code>. Servers save before stopping.</td></tr>
+              <tr><td>Remove the deployment</td><td><code>scripts/cleanup.sh</code> keeps all data. <code>--purge</code> deletes every world and the database.</td></tr>
+              <tr><td>Backups</td><td>Nightly at 04:00 to a separate machine: every world, the database and secrets. Kept for 14 days.</td></tr>
+              <tr><td>Restore</td><td>Steps are at the top of <code>scripts/backup.sh</code>: stop the server with <code>/omni stop</code>, restore its archive into its volume, start it again.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <p>For "undo what one player did", use <a href="#coreprotect">CoreProtect</a>. Backups are for losing a whole world or the database.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <span>braden.world · Admin guide</span>
+      <a href="./">← How to play</a>
+    </div>
+  </footer>
+</body>
+</html>
