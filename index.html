@@ -66,7 +66,7 @@
         <div class="cards">
           <div class="card">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
-            <h3>Main server</h3>
+            <h3>Homeroom</h3>
             <p>Where everyone lands when they join. Survival, normal rules.</p>
           </div>
           <div class="card">
@@ -254,7 +254,7 @@
       const message =
         "Hi Braden! I'd like to join braden.world.\n" +
         "Minecraft username: " + player.name + " (" + player.uuid + ")\n" +
-        "To add me: /omni allowlist baseline-minecraft-server add " + player.name;
+        "To add me: /omni allowlist homeroom add " + player.name;
       messageText.value = message;
       messageBox.hidden = false;
       try {
