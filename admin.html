@@ -36,6 +36,7 @@
         <li><a href="#allowlists">Allowlists</a></li>
         <li><a href="#coreprotect">CoreProtect</a></li>
         <li><a href="#essentials">EssentialsX</a></li>
+        <li><a href="#bedrock-admin">Bedrock players</a></li>
         <li><a href="#defaults">Server defaults</a></li>
         <li><a href="#architecture">How it works</a></li>
       </ol>
@@ -59,6 +60,7 @@
               <tr><td>LuckPerms</td><td>Proxy and every server</td><td>Permissions, shared across the whole network</td></tr>
               <tr><td>CoreProtect</td><td>Every server</td><td>Block and container logging, lookups and rollbacks</td></tr>
               <tr><td>ViaVersion</td><td>Every server</td><td>Lets newer clients (26.3) join the 26.2 servers</td></tr>
+              <tr><td>Geyser + Floodgate</td><td>Proxy</td><td>Let Bedrock Edition players (consoles, phones, Windows) join with their Xbox account</td></tr>
               <tr><td>EssentialsX</td><td>Every server</td><td>Homes, teleport requests, spawn, warps, messaging, moderation and admin tools</td></tr>
             </tbody>
           </table>
@@ -421,6 +423,32 @@
         <div class="note">
           <p>EssentialsX 2.22.0 officially supports Minecraft up to 26.1.2. It runs on our 26.2 servers with an "unsupported server version" warning in the log; homes and teleporting were tested working.</p>
         </div>
+      </section>
+
+      <section id="bedrock-admin">
+        <h2>Bedrock players</h2>
+        <p>Geyser and Floodgate run on the proxy and turn Bedrock players into ordinary Java players before they reach a server, so every server supports Bedrock without changes. Bedrock connects on UDP port <code>19132</code>.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Player</th><th>Shows up as</th><th>Permissions and allowlists</th></tr></thead>
+            <tbody>
+              <tr><td>Linked to a Java account</td><td>Their Java name and UUID</td><td>Exactly like their Java account</td></tr>
+              <tr><td>Bedrock only</td><td><code>.Gamertag</code> (dot prefix, spaces become <code>_</code>)</td><td>Their own LuckPerms user; can't be added to allowlists yet, so they can't get onto Homeroom unless they have the bypass permission</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Players link accounts themselves through GeyserMC's global linking (<code>link.geysermc.org</code>, <code>/linkaccount</code>); see the <a href="./#bedrock">player guide</a>. Admin commands work the same from Bedrock, typed into chat.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>/geyser list</code></td><td>Bedrock players currently online</td></tr>
+              <tr><td><code>/geyser version</code></td><td>Geyser version and supported Bedrock versions</td></tr>
+              <tr><td><code>/geyser reload</code></td><td>Reload Geyser's config without restarting the proxy</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Geyser is updated on every deploy, because Bedrock clients update themselves. If Bedrock players suddenly see "outdated server", redeploy.</p>
       </section>
 
       <section id="defaults">

@@ -27,6 +27,7 @@
       <p>On this page</p>
       <ol>
         <li><a href="#join">Join</a></li>
+        <li><a href="#bedrock">Bedrock &amp; consoles</a></li>
         <li><a href="#servers">Servers</a></li>
         <li><a href="#commands">Commands</a></li>
         <li><a href="#allowlists">Allowlists</a></li>
@@ -50,18 +51,82 @@
       <section id="join">
         <h2>Join</h2>
         <ol class="steps">
-          <li>Open <strong>Minecraft: Java Edition</strong>. Versions <strong>26.2</strong> and <strong>26.3</strong> both work.</li>
+          <li>Open <strong>Minecraft: Java Edition</strong>. Versions <strong>26.2</strong> and <strong>26.3</strong> both work. (On Bedrock? See <a href="#bedrock">Bedrock &amp; consoles</a>.)</li>
           <li>Go to <strong>Multiplayer</strong> → <strong>Add Server</strong>.</li>
           <li>Enter <code>braden.world</code> as the server address. No port needed.</li>
           <li>Click <strong>Done</strong>, then join. You'll start on the main server.</li>
         </ol>
-        <h3>Bedrock Edition (Xbox, PlayStation, Switch, phone, Windows)</h3>
-        <p>Bedrock players can join too, on the same worlds. The address is <code>braden.world</code> with port <code>19132</code>. You only need an Xbox/Microsoft account.</p>
-        <ul>
-          <li><strong>Phone or Windows:</strong> Play → Servers → Add Server, then enter <code>braden.world</code> and port <code>19132</code>.</li>
-          <li><strong>Xbox, PlayStation or Switch</strong> (consoles can't add servers directly): in your console's network settings, set the <strong>primary DNS</strong> to <code>104.238.130.180</code> and the <strong>secondary DNS</strong> to <code>8.8.8.8</code>. Open Minecraft, go to <strong>Servers</strong>, and join any featured server; a server list from <a href="https://github.com/Pugmatt/BedrockConnect" rel="noopener">BedrockConnect</a> opens where you can add <code>braden.world</code>, port <code>19132</code>. Set your DNS back to automatic when you're done if you like.</li>
-        </ul>
-        <p>Bedrock players show up with a <code>.</code> before their name. Bedrock-only players can't be allowlisted yet, so <strong>link your Bedrock account to a Java account</strong> if you have one, and you'll play as your Java self with the same inventory and homes.</p>
+        <p>On Xbox, PlayStation, Switch, a phone or Windows Bedrock? See <a href="#bedrock">Bedrock &amp; consoles</a>.</p>
+      </section>
+
+      <section id="bedrock">
+        <h2>Bedrock &amp; consoles</h2>
+        <p>Bedrock Edition players (Xbox, PlayStation, Switch, phones, tablets and Windows) join the same worlds as Java players. You sign in with your normal Xbox/Microsoft account.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Server address</td><td><code>braden.world</code></td></tr>
+              <tr><td>Port</td><td><code>19132</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>1. Link your Java account (if you have one)</h3>
+        <p>The main server is invite-only, and invites are for Java accounts. If you also play Java, link the two once and you'll play as your Java self on Bedrock: same name, inventory, homes and permissions.</p>
+        <ol class="steps">
+          <li>On <strong>Java</strong>, join the server <code>link.geysermc.org</code> and type <code>/linkaccount</code>. It shows a code.</li>
+          <li>On <strong>Bedrock</strong>, join <code>link.geysermc.org</code> (port <code>19132</code>) the same way you'll join our server (below), and type <code>/linkaccount &lt;code&gt;</code>.</li>
+          <li>Both sides confirm the link. Follow the on-screen instructions if they ask for the steps the other way round.</li>
+        </ol>
+        <p>Bedrock-only players (no Java account) can't be added to the main server's allowlist yet; ask Braden.</p>
+
+        <h3>2. Phone, tablet or Windows</h3>
+        <p><strong>Play</strong> → <strong>Servers</strong> → <strong>Add Server</strong>, then enter <code>braden.world</code> and port <code>19132</code>.</p>
+
+        <h3>2. Xbox, PlayStation or Switch</h3>
+        <p>Consoles can't add servers directly. <a href="https://github.com/Pugmatt/BedrockConnect" rel="noopener">BedrockConnect</a> works around that: you change your console's DNS, and the <strong>Featured Servers</strong> list opens a server list where you can add any server.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Console</th><th>Where to change DNS</th><th>Primary DNS</th><th>Secondary DNS</th></tr></thead>
+            <tbody>
+              <tr><td>Xbox</td><td>Settings → General → Network settings → Advanced settings → DNS settings → Manual</td><td><code>104.238.130.180</code></td><td><code>8.8.8.8</code></td></tr>
+              <tr><td>PlayStation 5</td><td>Settings → Network → Settings → Set Up Internet Connection → your connection → Advanced Settings → DNS Settings → Manual</td><td><code>45.55.68.52</code></td><td><code>8.8.8.8</code></td></tr>
+              <tr><td>PlayStation 4</td><td>Settings → Network → Set Up Internet Connection → your connection → Custom → IP address Automatic → DHCP host name Do Not Specify → DNS Settings Manual</td><td><code>45.55.68.52</code></td><td><code>8.8.8.8</code></td></tr>
+              <tr><td>Switch</td><td>System Settings → Internet → Internet Settings → your network → Change Settings → DNS Settings → Manual</td><td><code>104.238.130.180</code></td><td><code>8.8.8.8</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol class="steps">
+          <li>Change your DNS as above, then fully close and reopen Minecraft (restart the console if it doesn't take).</li>
+          <li>Go to <strong>Play</strong> → <strong>Servers</strong> and join any featured server. Instead of that server, the <strong>BedrockConnect</strong> server list opens.</li>
+          <li>Choose <strong>Connect to a Server</strong> (or <strong>Add Server</strong>) and enter <code>braden.world</code>, port <code>19132</code>. Save it so it's there next time.</li>
+        </ol>
+        <div class="note">
+          <p>While your console uses that DNS, the BedrockConnect community server sees which addresses your console looks up. Set DNS back to <strong>Automatic</strong> when you're done playing if you prefer.</p>
+        </div>
+
+        <h3>Troubleshooting</h3>
+        <details>
+          <summary>The featured server opens normally (e.g. The Hive's lobby)</summary>
+          <p>The DNS change hasn't taken effect. Check it's set to Manual with the values above, then fully close Minecraft or restart the console.</p>
+        </details>
+        <details>
+          <summary>"You are not on the allowlist for homeroom"</summary>
+          <p>You joined as a Bedrock-only player. Link your Java account (step 1), or ask Braden.</p>
+        </details>
+        <details>
+          <summary>It can't connect, and I'm on the same Wi-Fi as the server</summary>
+          <p>Some home routers can't connect to their own public address from inside the network. Ask the host for the local address to use at home instead of <code>braden.world</code>.</p>
+        </details>
+        <details>
+          <summary>"Outdated server" or "Outdated client"</summary>
+          <p>Update Minecraft. If it still happens right after a Bedrock update, the server needs a moment to catch up; tell Braden.</p>
+        </details>
+        <details>
+          <summary>Something looks or behaves slightly differently than on Java</summary>
+          <p>Bedrock players connect through a translator (Geyser), and a few things don't translate perfectly. Report anything game-breaking.</p>
+        </details>
       </section>
 
       <section id="servers">
