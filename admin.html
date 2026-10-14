@@ -124,8 +124,8 @@
             <tbody>
               <tr><td><code>default</code></td><td>Everyone, automatically</td><td>Homes (3), <code>/tpa</code>, <code>/back</code>, <code>/spawn</code>, <code>/warp</code>, messaging and mail, <code>/afk</code>, <code>/helpop</code> and other everyday commands</td></tr>
               <tr><td><code>superuser</code></td><td>Trusted players</td><td>Everything in default, plus: allowlist people (<code>omniscense.allowlist</code>), change game mode, <code>/tp</code> and <code>/tphere</code>, and 10 homes</td></tr>
-              <tr><td><code>staff</code></td><td>Moderators</td><td>Everything in superuser, plus: <code>/kick</code>, <code>/mute</code>, <code>/tempban</code>, <code>/ban</code>, <code>/unban</code>, jails, <code>/invsee</code>, <code>/whois</code>, CoreProtect inspect, lookup, rollback and restore, and receiving <code>/helpop</code> messages</td></tr>
-              <tr><td><code>admin</code></td><td>Owners</td><td>Every command on every server (<code>*</code>), including server management and turning allowlists on and off</td></tr>
+              <tr><td><code>staff</code></td><td>Moderators</td><td>Everything in superuser, plus: every <code>/omni</code> command (create, start, stop and remove servers; turn allowlists on and off), <code>/kick</code>, <code>/mute</code>, <code>/tempban</code>, <code>/ban</code>, <code>/unban</code>, jails, <code>/invsee</code>, <code>/whois</code>, CoreProtect inspect, lookup, rollback and restore, and receiving <code>/helpop</code> messages</td></tr>
+              <tr><td><code>admin</code></td><td>Braden (root)</td><td>Every command on every server (<code>*</code>), including LuckPerms itself</td></tr>
             </tbody>
           </table>
         </div>
@@ -319,7 +319,7 @@
 
       <section id="servers">
         <h2>Managing servers</h2>
-        <p><code>/omni</code> is short for <code>/omniscense</code>. All of these need <code>omniscense.admin</code>.</p>
+        <p><code>/omni</code> is short for <code>/omniscense</code>. All of these need <code>omniscense.admin</code>, which the <code>staff</code> role has.</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Command</th><th>What it does</th></tr></thead>
